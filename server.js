@@ -4,11 +4,20 @@ const bodyParse = require('body-parser')
 const { save_user_information } = require('./models/server_db.js')
 const path = require ('path')
 const publicPath = path.join(__dirname, './public')
- // handeling all the parsing
+const paypal = require ('paypal-rest-sdk')
 
+ // handeling all the parsing
 app.use(bodyParse.json())
+
 app.use(express.static(publicPath))
 
+
+// paypal config
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live
+  'client_id': 'AbTok7XNX-Vgh4RwD_y9__0jPlxKxe7TnLpCCHzIK_b1l6QUlZcXNvOPnBlh0mW9AhbGFckb8AxHUWRW',
+  'client_secret': 'ELNjPwkYThyrGs2WzxZT2xR4RgPGVM5ypovBFNwQk2g6Y8qgrgBeKd7LP-rJBUmd_e9FpeyV3A8bz-6N'
+});
 app.post('/post_info', async (req,res) => {
   var email = req.body.email
   var amount =req.body.amount
