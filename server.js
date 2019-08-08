@@ -19,6 +19,12 @@ if (amount <= 1 ) {
   var result = await save_user_information( {"amount" : amount , "email" : email})
   res.send (result)
 })
+
+app.get('/get_total_amount' , async (req , res) => {
+  var result =  await get_total_amount()
+      res.send(result)
+
+})
   app.listen(3000 , () => {
     console.log ("server is running on port 3000")
   })
