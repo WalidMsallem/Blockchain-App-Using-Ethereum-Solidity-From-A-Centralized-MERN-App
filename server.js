@@ -29,7 +29,57 @@ if (amount <= 1 ) {
   return res.json(return_info)
 }
   var result = await save_user_information( {"amount" : amount , "email" : email})
-  res.send (result)
+
+
+  var create_payment_json = {
+      "intent": "sale",
+      "payer": {
+          "payment_method": "paypal"
+      },
+      "redirect_urls": {
+          "return_url": "http://localhost:3000/success",
+          "cancel_url": "http://localhost:3000/cancel"
+      },
+      "transactions": [{
+          "item_list": {
+              "items": [{
+                  "name": "Lottery",
+                  "sku": "sku",
+                  "price":  amount,
+                  "currency": "USD",
+                  "quantity": 1
+              }]
+          },
+          "amount": {
+              "currency": "USD",
+              "total": amount
+          },
+          "payee": {
+            'email' :"ottery_manager@lottery.com"
+       },
+          "description": "This is the payment description. ( Lottery purchase ) "
+      }]
+  };
+
+
+  paypal.payment.create(create_payment_json, function (error, payment) {
+      if (error) {
+          throw error;
+      } else {
+          console.log("Create Payment Response");
+          console.log(payment);
+       payment.links.map(element => {
+         if(element.rel === 'approval_url'){
+           return res.send(element.href)
+         }
+       })
+
+
+      }
+  });
+
+
+//   res.send (result)
 })
 
 app.get('/get_total_amount' , async (req , res) => {
